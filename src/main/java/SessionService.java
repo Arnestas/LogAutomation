@@ -9,10 +9,18 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The class contains methods for generating and merging sessions from initial data.
+ * The class includes a method for generating a list of sessions from a list of initial data,
+ * a method for merging sessions with the same ID,
+ * and several utility methods for comparing and updating session properties.
+ */
 public class SessionService {
+
     /**
-     * The method generates a list of all sessions(objects) from initial data:
-     * assigns null or 'clear' values
+     * Generates a list of Session objects from a list of InitialData objects.
+     * @param dataList The list of InitialData objects to be used in generating the list of Session objects.
+     * @return The list of Session objects generated from the list of InitialData objects.
      */
     public List<Session> generateSessionList(List<InitialData> dataList){
         List<Session> sessions = new ArrayList<>();
@@ -54,7 +62,9 @@ public class SessionService {
     }
 
     /**
-     * The method takes 'clear' values from the log
+     * Parses a log string and returns an array of two strings containing the key and value of the log.
+     * @param log The log string to be parsed.
+     * @return An array of two strings containing the key and value of the log.
      */
     public String[] manageLog(String log){
         String[] logValue = new String[2];
@@ -87,6 +97,11 @@ public class SessionService {
         return logValue;
     }
 
+    /**
+     * Merge a list of sessions by Session ID. Sessions with the same Session ID will be merged into a single session, with their properties compared and updated as needed.
+     * @param sessions a List of Session objects to merge.
+     * @return A List of merged Session objects.
+     */
     public List<Session> mergeSessionsBySessionId(List<Session> sessions){
         List<Session> mergedSessions = new ArrayList<>();
         for (Session session : sessions){
@@ -95,16 +110,11 @@ public class SessionService {
             } else {
                 for (Session merged : mergedSessions) {
                     if (merged.getSessionId().equals(session.getSessionId())) {
-                        merged.setClient(compareStrings(
-                                merged.getClient(), session.getClient()));
-                        merged.setMessageId(compareStrings(
-                                merged.getMessageId(), session.getMessageId()));
-                        merged.setStatus(compareStrings(
-                                merged.getStatus(), session.getStatus()));
-                        merged.setAddress(compareAddress(
-                                merged.getAddress(), session.getAddress()));
-                        merged.setTime(compareTime(
-                                merged.getTime(), session.getTime().getStart()));
+                        merged.setClient(compareStrings(merged.getClient(), session.getClient()));
+                        merged.setMessageId(compareStrings(merged.getMessageId(), session.getMessageId()));
+                        merged.setStatus(compareStrings(merged.getStatus(), session.getStatus()));
+                        merged.setAddress(compareAddress(merged.getAddress(), session.getAddress()));
+                        merged.setTime(compareTime(merged.getTime(), session.getTime().getStart()));
                     }
                 }
             }
@@ -113,7 +123,10 @@ public class SessionService {
     }
 
     /**
-     * The method finds min and max values of session times and calculates a duration of the session
+     * Compare two times and return the updated time object with the earliest start time and the latest end time.
+     * @param time The time object to compare against.
+     * @param newTime The new time object to compare with.
+     * @return The updated time object.
      */
     public Time compareTime (Time time, LocalDateTime newTime){
         Duration duration;
@@ -129,9 +142,10 @@ public class SessionService {
     }
 
     /**
-     * Session has addresses 'from' and 'to'.
-     * We are calling this method during merging of the session.
-     * This method compares sessions address values, and leaves only not null values.
+     * Compare two address objects and return the updated address object with any non-null fields from the new address object.
+     * @param a The original address object to compare against.
+     * @param b The new address object to compare with.
+     * @return The updated address object.
      */
     public Address compareAddress(Address a, Address b){
         if (b.getFrom() != null){
@@ -144,8 +158,10 @@ public class SessionService {
     }
 
     /**
-     * We are calling this method during merging of the session.
-     * This method compares sessions string values, and leaves only not null values.
+     * Compare two strings and return the new string if it is not null.
+     * @param a The original string to compare against.
+     * @param b The new string to compare with.
+     * @return The updated string.
      */
     public String compareStrings(String a, String b){
         if (b != null){
@@ -154,6 +170,12 @@ public class SessionService {
         return a;
     }
 
+    /**
+     * Check if a session with the given session ID already exists in the merged session list.
+     * @param mergedSession The list of merged sessions to search through.
+     * @param sessionId The session ID to search for.
+     * @return True if the session already exists in the list, false otherwise.
+     */
     public boolean sessionExists(List<Session> mergedSession, String sessionId){
         for (Session session : mergedSession){
             if (session.getSessionId().equals(sessionId)){
@@ -163,6 +185,11 @@ public class SessionService {
         return false;
     }
 
+    /**
+     * Remove any incomplete sessions from the list of sessions.
+     * @param sessions The list of sessions to remove incomplete sessions from.
+     * @return The list of sessions without any incomplete sessions.
+     */
     public List<Session> removeIncompleteSessions(List<Session> sessions){
         List<Session> sessionListWithoutNulls = new ArrayList<>();
         for (Session session : sessions){

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Time {
     private LocalDateTime start;
-    @JsonIgnore // Ignore printing to JSON file
+    @JsonIgnore
     private LocalDateTime end;
     private Duration duration;
 }

@@ -9,11 +9,18 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+/**
+ * Saves data in a JSON format to the file
+ */
 @Log
 public class SaveToFile {
 
     final String FILE_ADDRESS = "src/main/resources/output.json";
 
+    /**
+     * Saves data in JSON format to the file
+     * @param sessions List of Session objects
+     */
     public void save(List<Session> sessions){
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
